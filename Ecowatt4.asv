@@ -1,0 +1,101 @@
+clc;
+clear;
+close all;
+
+% Load JSON Data
+jsonFile = 'power_data.json'; % Ensure this file is in the working directory
+fid = fopen(jsonFile);
+raw = fread(fid, inf);
+fclose(fid);
+jsonText = char(raw');
+devices = jsondecode(jsonText);
+disp('JSON Data Loaded Successfully!');
+
+% Extract normal voltages for all devices
+deviceNames = fieldnames(devices);
+normalVoltages = zeros(length(deviceNames), 1);
+for i = 1:length(deviceNames)
+    device = deviceNames{i};
+    if isfield(devices.(device), 'normal_voltage')
+        normalVoltages(i) = devices.(device).normal_voltage;
+    else
+        error('JSON structure mismatch: Expected "normal_voltage" field not found in device: %s', device);
+    end
+end
+
+% Define ThingSpeak API parameters
+channelID = 2859435;
+writeAPIKey = 'XHA7QTFOGABTLFSF';
+url = sprintf('https://api.thingspeak.com/update?api_key=%s', writeAPIKey);
+
+% Time variables
+t = 0;  
+dt = 0.1; % Time step for updating the voltage (simulating real-time)
+freq = 0.1; % Frequency of the sine wave
+amplitude = 25; % Increased amplitude for noticeable variations
+
+% Set up real-time plotting
+figure;
+hold on;
+grid on;
+xlabel('Time (s)');
+ylabel('Voltage (V)');
+title('Real-Time Sinusoidal Voltage Fluctuations');
+colors = lines(length(deviceNames));
+legendEntries = gobjects(length(deviceNames), 1);
+xlim([0, 20]);
+ylim([min(normalVoltages) - amplitude, max(normalVoltages) + amplitude]);
+
+% Initialize empty plots for each device
+for i = 1:length(deviceNames)
+    legendEntries(i) = plot(nan, nan, 'Color', colors(i, :), 'LineWidth', 2, 'DisplayName', deviceNames{i});
+end
+legend(legendEntries, 'Location', 'best');
+
+% Real-time monitoring loop
+while true
+    t = t + dt;
+    for i = 1:length(deviceNames)
+        device = deviceNames{i};
+        normalVoltage = normalVoltages(i);
+
+        % Generate sinusoidal voltage variations
+        voltage = normalVoltage + amplitude * sin(2 * pi * freq * t + i) + randi([-5, 5]);
+
+        % Determine device status
+        if voltage < normalVoltage - 15
+            status = 'Low Power!';
+        elseif voltage > normalVoltage + 15
+            status = 'Overload!';
+        else
+            status = 'Normal';
+        end
+
+        % Display device voltage and status
+        fprintf('%s: Voltage = %.2fV -> %s\n', device, voltage, status);
+
+        % Update plot
+        xData = get(legendEntries(i), 'XData');
+        yData = get(legendEntries(i), 'YData');
+        set(legendEntries(i), 'XData', [xData, t], 'YData', [yData, voltage]);
+
+        % Upload Data to ThingSpeak
+        try
+            webwrite(url, 'field1', voltage);
+        catch
+            warning('Failed to upload data to ThingSpeak. Check API key or internet connection.');
+        end
+    end
+
+    % Pause for visualization
+    pause(0.1);
+
+    % Keep recent data for display
+    if t > 20
+        for i = 1:length(deviceNames)
+            xData = get(legendEntries(i), 'XData');
+            yData = get(legendEntries(i), 'YData');
+            set(legendEntries(i), 'XData', xData(xData > t - 20), 'YData', yData(xData > t - 20));
+        end
+    end
+end

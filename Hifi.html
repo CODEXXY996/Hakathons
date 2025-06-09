@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .image-container {
+            background: white;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .image-number {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Gallery</h1>
+    <div class="gallery">
+        <div class="image-container">
+            <img src="image1.png" alt="Image 1">
+            <div class="image-number">1</div>
+        </div>
+        <div class="image-container">
+            <img src="image2.png" alt="Image 2">
+            <div class="image-number">2</div>
+        </div>
+        <div class="image-container">
+            <img src="image3.png" alt="Image 3">
+            <div class="image-number">3</div>
+        </div>
+        <div class="image-container">
+            <img src="image4.png" alt="Image 4">
+            <div class="image-number">4</div>
+        </div>
+        <div class="image-container">
+            <img src="image5.png" alt="Image 5">
+            <div class="image-number">5</div>
+        </div>
+        <div class="image-container">
+            <img src="image6.png" alt="Image 6">
+            <div class="image-number">6</div>
+        </div>
+        <div class="image-container">
+            <img src="image7.png" alt="Image 7">
+            <div class="image-number">7</div>
+        </div>
+        <div class="image-container">
+            <img src="image8.png" alt="Image 8">
+            <div class="image-number">8</div>
+        </div>
+        <div class="image-container">
+            <img src="image9.png" alt="Image 9">
+            <div class="image-number">9</div>
+        </div>
+    </div>
+</body>
+</html>

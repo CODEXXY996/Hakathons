@@ -1,0 +1,27 @@
+{
+    "AC": {
+        "Voltage (V)": 234,
+        "Current (A)": 8.04,
+        "Power (W)": 1881.36
+    },
+    "TV": {
+        "Voltage (V)": 114,
+        "Current (A)": 1.42,
+        "Power (W)": 161.88
+    },
+    "Fridge": {
+        "Voltage (V)": 226,
+        "Current (A)": 2.0,
+        "Power (W)": 452.0
+    },
+    "Fan": {
+        "Voltage (V)": 221,
+        "Current (A)": 0.44,
+        "Power (W)": 97.24
+    },
+    "Light": {
+        "Voltage (V)": 117,
+        "Current (A)": 0.3,
+        "Power (W)": 35.1
+    }
+}
